@@ -6,95 +6,218 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  ActivityIndicator,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native"; // For navigation to sign-up screen
+import { useNavigation } from "@react-navigation/native";
+import { Lock, Mail, Eye, EyeOff } from "lucide-react-native";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigation = useNavigation(); // Using navigation
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigation = useNavigation();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert("Error", "Please fill in all fields");
       return;
     }
-    Alert.alert("Success", `Logged in as: ${email}`);
+
+    setIsLoading(true);
+
+    try {
+      // Simulating an API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // For demonstration purposes, we're using hardcoded credentials
+      // In a real app, you would validate against your backend
+      if (email === "user@example.com" && password === "password") {
+        navigation.navigate("Dashboard");
+      } else {
+        Alert.alert("Error", "Invalid email or password");
+      }
+    } catch (error) {
+      Alert.alert("Error", "An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor="#aaa"
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="#aaa"
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-        secureTextEntry
-      />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.logoContainer}>
+          <Lock color="#4A90E2" size={64} />
+          <Text style={styles.title}>Welcome Back</Text>
+          <Text style={styles.subtitle}>Sign in to continue</Text>
+        </View>
 
-      {/* Link to Sign-Up Screen */}
-      <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-        <Text style={styles.signUpLink}>Don't have an account? Sign Up</Text>
-      </TouchableOpacity>
-    </View>
+        <View style={styles.inputContainer}>
+          <Mail color="#4A90E2" size={24} style={styles.inputIcon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor="#999"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCompleteType="email"
+            textContentType="emailAddress"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Lock color="#4A90E2" size={24} style={styles.inputIcon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="#999"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+            textContentType="password"
+          />
+          <TouchableOpacity
+            style={styles.eyeIcon}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? (
+              <EyeOff color="#4A90E2" size={24} />
+            ) : (
+              <Eye color="#4A90E2" size={24} />
+            )}
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity style={styles.forgotPassword}>
+          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleLogin}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>Login</Text>
+          )}
+        </TouchableOpacity>
+
+        <View style={styles.signUpContainer}>
+          <Text style={styles.signUpText}>Don't have an account? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+            <Text style={styles.signUpLink}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#F7F9FC",
+  },
+  scrollContainer: {
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-    width: "100%",
-    backgroundColor: "#f8f9fa",
+    paddingVertical: 50,
+  },
+  logoContainer: {
+    alignItems: "center",
+    marginBottom: 40,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
-    marginBottom: 20,
     color: "#333",
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#666",
+    marginBottom: 20,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "85%",
+    height: 55,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    marginBottom: 15,
+    paddingHorizontal: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  inputIcon: {
+    marginRight: 10,
   },
   input: {
-    width: "90%",
-    height: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 16,
-    paddingHorizontal: 10,
-    backgroundColor: "#fff",
+    flex: 1,
+    fontSize: 16,
+    color: "#333",
+  },
+  eyeIcon: {
+    padding: 5,
+  },
+  forgotPassword: {
+    alignSelf: "flex-end",
+    marginRight: "7.5%",
+    marginBottom: 20,
+  },
+  forgotPasswordText: {
+    color: "#4A90E2",
+    fontSize: 14,
   },
   button: {
-    width: "90%",
-    height: 50,
-    backgroundColor: "#007bff",
+    width: "85%",
+    height: 55,
+    backgroundColor: "#4A90E2",
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 8,
+    borderRadius: 10,
+    marginBottom: 20,
+    shadowColor: "#4A90E2",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
   buttonText: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
   },
-  signUpLink: {
-    color: "#007bff",
-    marginTop: 16,
+  signUpContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  signUpText: {
+    color: "#666",
     fontSize: 16,
+  },
+  signUpLink: {
+    color: "#4A90E2",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 
