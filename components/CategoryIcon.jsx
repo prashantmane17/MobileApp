@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { LucideIcon } from 'lucide-react-native';
+
 
 const CategoryIcon = ({ icon: Icon, label, onPress }) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <View style={styles.iconContainer}>
+      <View style={styles.iconContainer} >
         <Icon color="#2874F0" size={24} />
       </View>
       <Text style={styles.label} numberOfLines={1}>
