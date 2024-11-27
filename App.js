@@ -1,16 +1,16 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import Login from "./components/Login";
-import SignUp from "./components/SignUp";
-import Dashboard from "./components/Dashboard";
-import EcomDash from "./components/EcomDash";
+import Login from "./screens/Login";
+import SignUp from "./screens/SignUp";
+import Dashboard from "./screens/Dashboard";
+import EcomDash from "./screens/EcomDash";
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="Dashboard">
         <Stack.Screen
           name="Login"
           component={Login}

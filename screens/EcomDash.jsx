@@ -9,8 +9,8 @@ import {
   FlatList,
 } from "react-native";
 import { Search, ShoppingBag } from "lucide-react-native";
-import EcomNav from "./EcomNav";
-import ProductItem from "./ProductItem";
+import EcomNav from "../navigation/EcomNav";
+import ProductItem from "../components/ProductItem";
 
 const categories = ["All", "Electronics", "Clothing", "Books", "Home & Garden"];
 
